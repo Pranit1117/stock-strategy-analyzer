@@ -1,9 +1,9 @@
 import sys
 import os
 
-# ---------- PATH FIX ----------
-PROJECT_ROOT = r"C:\Users\prani\Documents\stock_strategy_analyzer"
-sys.path.insert(0, PROJECT_ROOT)
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(ROOT_DIR)
+
 
 # ---------- IMPORTS ----------
 import streamlit as st
