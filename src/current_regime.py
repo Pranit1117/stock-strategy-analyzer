@@ -5,21 +5,21 @@ from src.regimes import kmeans_numpy
 def compute_current_regime(price_df, k=3):
     """
     Compute current market regime from recent data.
-    Always returns a regime in {0, 1, 2} regardless of how many
-    clusters the data supports (handles short periods like 1mo).
+    Always returns a regime in {0, 1, 2} regardless of data length.
     """
     features = build_features(price_df)
     X = features.values
 
-    # effective_k may be less than k for short periods (e.g. 1mo)
-    effective_k = min(k, len(X))
-    labels = kmeans_numpy(X, k=k)  # reduction handled inside kmeans_numpy
+    # If not enough data after feature engineering, default to Mixed (1)
+    if len(X) < 2:
+        features["regime"] = 1
+        return 1, features
 
-    # Remap labels to always stay within {0, 1, 2} so app.py regime_map
-    # never gets a KeyError when effective_k < 3
+    effective_k = min(k, len(X))
+    labels = kmeans_numpy(X, k=k)
+
+    # Remap labels to always stay within {0, 1, 2}
     if effective_k < 3:
-        # effective_k=1 → all labels are 0 → remap to 1 (Mixed/Unknown)
-        # effective_k=2 → labels 0,1 → remap to 0,2
         if effective_k == 1:
             remap = {0: 1}
         else:  # effective_k == 2
