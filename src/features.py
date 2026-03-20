@@ -3,7 +3,7 @@ import pandas as pd
 def build_features(df):
     n = len(df)
 
-    # Adaptive windows — scale down for short periods (e.g. 1mo ~22 days)
+    # Adaptive windows so short periods (1mo ~22 days) don't drop all rows
     w_short = min(20, max(2, n // 3))
     w_long  = min(50, max(3, n // 2))
 
