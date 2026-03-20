@@ -3,7 +3,7 @@ import numpy as np
 def kmeans_numpy(X, k=3, max_iters=100, seed=42):
     np.random.seed(seed)
 
-    # Guard: if we have fewer samples than clusters, reduce k
+    # Guard: can't have more clusters than data points
     k = min(k, len(X))
 
     if k == 0:
@@ -16,7 +16,7 @@ def kmeans_numpy(X, k=3, max_iters=100, seed=42):
         distances = np.linalg.norm(X[:, None] - centroids, axis=2)
         labels = np.argmin(distances, axis=1)
         new_centroids = np.array([
-            # Guard: if a cluster is empty, keep old centroid
+            # Guard: keep old centroid if cluster is empty
             X[labels == i].mean(axis=0) if np.any(labels == i) else centroids[i]
             for i in range(k)
         ])
